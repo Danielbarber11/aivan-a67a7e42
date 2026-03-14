@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovieHub | עולם הקולנוע שלך</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Heebo', sans-serif;
+            background-color: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        .movie-card:hover .overlay {
+            opacity: 1;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #4f46e5;
+            border-radius: 10px;
+        }
+        .hero-gradient {
+            background: linear-gradient(0deg, #0a0a0a 0%, rgba(10,10,10,0) 100%);
+        }
+        .page-transition {
+            animation: fadeIn 0.4s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .genre-pill:hover {
+            background-color: #4f46e5;
+            color: white;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-zinc-800">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-8">
+                <a href="#" onclick="navigateTo('home')" class="text-3xl font-black bg-gradient-to-l from-indigo-500 to-purple-500 bg-clip-text text-transparent">MovieHub</a>
+                <div class="hidden md:flex gap-6">
+                    <button onclick="navigateTo('home')" class="hover:text-indigo-400 transition">ראשי</button>
+                    <button onclick="navigateTo('browse')" class="hover:text-indigo-400 transition">סרטים</button>
+                    <button onclick="navigateTo('watchlist')" class="hover:text-indigo-400 transition">הרשימה שלי</button>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="relative hidden sm:block">
+                    <input type="text" id="searchInput" placeholder="חפש סרט..." class="bg-zinc-900 border border-zinc-700 rounded-full px-4 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 w-64 text-sm">
+                    <button onclick="handleSearch()" class="absolute left-3 top-2 text-zinc-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </button>
+                </div>
+                <button class="bg-indigo-600 hover:bg-indigo-700 px-4 py-1.5 rounded-full text-sm font-bold transition">התחברות</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Wrapper -->
+    <main class="pt-16">
+        
+        <!-- Home Section -->
+        <section id="home-page" class="page-section">
+            <!-- Hero Banner -->
+            <div class="relative h-[80vh] w-full">
+                <img src="https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?q=80&w=2070" class="w-full h-full object-cover" alt="Hero">
+                <div class="absolute inset-0 hero-gradient flex flex-col justify-end p-8 md:p-20">
+                    <div class="max-w-3xl space-y-6">
+                        <span class="bg-indigo-600 text-xs font-bold px-3 py-1 rounded-full">מומלץ השבוע</span>
+                        <h1 class="text-5xl md:text-7xl font-black">התחלה: האינסוף</h1>
+                        <p class="text-zinc-300 text-lg md:text-xl leading-relaxed">גנב שגונב סודות תאגידיים באמצעות שימוש בטכנולוגיית שיתוף חלומות מקבל את המשימה ההפוכה: להשתיל רעיון במוחו של מנכ"ל.</p>
+                        <div class="flex gap-4">
+                            <button class="bg-white text-black px-8 py-3 rounded-md font-bold flex items-center gap-2 hover:bg-zinc-200 transition">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                צפה עכשיו
+                            </button>
+                            <button class="bg-zinc-800/80 backdrop-blur text-white px-8 py-3 rounded-md font-bold flex items-center gap-2 hover:bg-zinc-700 transition">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                עוד מידע
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="px-4 py-12 max-w-7xl mx-auto space-y-12">
+                <div>
+                    <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                        <span class="w-1 h-8 bg-indigo-500 rounded-full"></span>
+                        מגמות עכשיו
+                    </h2>
+                    <div id="trending-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                        <!-- Movies generated by JS -->
+                    </div>
+                </div>
+
+                <div>
+                    <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                        <span class="w-1 h-8 bg-purple-500 rounded-full"></span>
+                        פעולה ואקשן
+                    </h2>
+                    <div id="action-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                        <!-- Movies generated by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Browse Section -->
+        <section id="browse-page" class="page-section hidden p-8 pt-24 max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
+                <h1 class="text-4xl font-black">כל הסרטים</h1>
+                <div class="flex gap-2 flex-wrap">
+                    <button class="genre-pill bg-zinc-800 px-4 py-1 rounded-full text-sm transition" onclick="filterGenre('All')">הכל</button>
+                    <button class="genre-pill bg-zinc-800 px-4 py-1 rounded-full text-sm transition" onclick="filterGenre('Action')">אקשן</button>
+                    <button class="genre-pill bg-zinc-800 px-4 py-1 rounded-full text-sm transition" onclick="filterGenre('Sci-Fi')">מדע בדיוני</button>
+                    <button class="genre-pill bg-zinc-800 px-4 py-1 rounded-full text-sm transition" onclick="filterGenre('Drama')">דרמה</button>
+                </div>
+            </div>
+            <div id="browse-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                <!-- Movies -->
+            </div>
+        </section>
+
+        <!-- Watchlist Section -->
+        <section id="watchlist-page" class="page-section hidden p-8 pt-24 max-w-7xl mx-auto">
+            <h1 class="text-4xl font-black mb-10">הרשימה שלי</h1>
+            <div id="watchlist-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                <!-- Empty state handled by JS -->
+            </div>
+        </section>
+
+        <!-- Movie Details View (Modal style but full page) -->
+        <section id="details-page" class="page-section hidden min-h-screen bg-black relative">
+            <div id="movie-hero-backdrop" class="absolute top-0 w-full h-[60vh] opacity-40 blur-sm"></div>
+            <div class="relative z-10 p-8 pt-24 max-w-5xl mx-auto">
+                <button onclick="navigateTo('home')" class="mb-8 flex items-center gap-2 text-zinc-400 hover:text-white transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                    חזרה
+                </button>
+                <div id="details-content">
+                    <!-- Dynamic details content -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black border-t border-zinc-900 py-12 mt-20">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="space-y-4">
+                <h3 class="text-2xl font-black text-indigo-500">MovieHub</h3>
+                <p class="text-zinc-500">חווית הצפייה הטובה ביותר במזרח התיכון. סרטים באיכות 4K ללא הגבלה.</p>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4">ניווט</h4>
+                <ul class="text-zinc-400 space-y-2 text-sm">
+                    <li><a href="#" onclick="navigateTo('home')" class="hover:text-white">בית</a></li>
+                    <li><a href="#" onclick="navigateTo('browse')" class="hover:text-white">סרטים</a></li>
+                    <li><a href="#" onclick="navigateTo('watchlist')" class="hover:text-white">הרשימה שלי</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4">תמיכה</h4>
+                <ul class="text-zinc-400 space-y-2 text-sm">
+                    <li>שאלות ותשובות</li>
+                    <li>צור קשר</li>
+                    <li>תנאי שימוש</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4">הירשמו לעדכונים</h4>
+                <div class="flex gap-2">
+                    <input type="email" placeholder="אימייל" class="bg-zinc-900 border border-zinc-700 px-3 py-1 rounded text-sm w-full">
+                    <button class="bg-indigo-600 px-4 py-1 rounded text-sm font-bold">שלח</button>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-12 text-zinc-600 text-xs">
+            © 2024 MovieHub. כל הזכויות שמורות.
+        </div>
+    </footer>
+
+    <script>
+        const movies = [
+            { id: 1, title: "חולית: חלק 2", year: 2024, rating: 9.1, genre: "Sci-Fi", poster: "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=2094", desc: "המסע המיתולוגי של פול אטריידס ממשיך כשהוא מתאחד עם צ'אני והדרור בנתיב לנקמה נגד הקושרים שהשמידו את משפחתו.", duration: "166 דקות" },
+            { id: 2, title: "אופנהיימר", year: 2023, rating: 8.9, genre: "Drama", poster: "https://images.unsplash.com/photo-1440404653325-ab127d49abc1?q=80&w=2070", desc: "סיפורו של הפיזיקאי האמריקאי ג'יי רוברט אופנהיימר ותפקידו בפיתוח פצצת האטום.", duration: "180 דקות" },
+            { id: 3, title: "באטמן", year: 2022, rating: 8.5, genre: "Action", poster: "https://images.unsplash.com/photo-1509248961158-e54f6934749c?q=80&w=1974", desc: "כאשר רוצח סדרתי סדיסטי מתחיל לרצוח דמויות פוליטיות מרכזיות בגות'אם, באטמן נאלץ לחקור את השחיתות הנסתרת בעיר.", duration: "176 דקות" },
+            { id: 4, title: "ספיידרמן", year: 2023, rating: 8.7, genre: "Action", poster: "https://images.unsplash.com/photo-1635805737707-575885ab0820?q=80&w=1974", desc: "מיילס מוראלס יוצא למסע דרך המולטי-וורס ופוגש צוות של אנשי-עכביש שאמורים להגן על הקיום שלו.", duration: "140 דקות" },
+            { id: 5, title: "בין כוכבים", year: 2014, rating: 8.7, genre: "Sci-Fi", poster: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=2072", desc: "צוות חוקרים נוסע דרך חור תולעת בחלל בניסיון להבטיח את הישרדותה של האנושות.", duration: "169 דקות" },
+            { id: 6, title: "האביר האפל", year: 2008, rating: 9.0, genre: "Action", poster: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=2070", desc: "באטמן חייב לקבל את אחד המבחנים הפסיכולוגיים והפיזיים הגדולים ביותר של יכולתו להילחם בחוסר צדק.", duration: "152 דקות" },
+            { id: 7, title: "ג'וקר", year: 2019, rating: 8.4, genre: "Drama", poster: "https://images.unsplash.com/photo-1531259683007-016a7b628fc3?q=80&w=1974", desc: "סיפור המקור של נבל העל הידוע לשמצה.", duration: "122 דקות" },
+            { id: 8, title: "גלדיאטור", year: 2000, rating: 8.5, genre: "Action", poster: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070", desc: "גנרל רומי לשעבר יוצא לנקום בקיסר המושחת שרצח את משפחתו ושלח אותו לעבדות.", duration: "155 דקות" },
+        ];
+
+        let watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
+
+        function init() {
+            renderMovies('trending-grid', movies.slice(0, 6));
+            renderMovies('action-grid', movies.filter(m => m.genre === 'Action'));
+            renderMovies('browse-grid', movies);
+            updateWatchlist();
+            
+            // Search listener
+            document.getElementById('searchInput').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') handleSearch();
+            });
+        }
+
+        function createMovieCard(movie) {
+            const inWatchlist = watchlist.some(m => m.id === movie.id);
+            return `
+                <div class="relative group cursor-pointer page-transition" onclick="showMovieDetails(${movie.id})">
+                    <div class="aspect-[2/3] overflow-hidden rounded-lg bg-zinc-800">
+                        <img src="${movie.poster}" alt="${movie.title}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                    </div>
+                    <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                        <p class="text-sm font-bold">${movie.title}</p>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="text-xs text-indigo-400 font-bold">★ ${movie.rating}</span>
+                            <span class="text-xs text-zinc-300">${movie.year}</span>
+                        </div>
+                        <button onclick="event.stopPropagation(); toggleWatchlist(${movie.id})" class="mt-3 w-full py-1.5 text-xs bg-white text-black rounded font-bold hover:bg-indigo-500 hover:text-white transition">
+                            ${inWatchlist ? 'הסר מהרשימה' : '+ הרשימה שלי'}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderMovies(containerId, data) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = data.map(movie => createMovieCard(movie)).join('');
+        }
+
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page-section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(pageId + '-page').classList.remove('hidden');
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function showMovieDetails(movieId) {
+            const movie = movies.find(m => m.id === movieId);
+            if (!movie) return;
+
+            const inWatchlist = watchlist.some(m => m.id === movie.id);
+            const content = `
+                <div class="grid md:grid-cols-3 gap-12">
+                    <div class="md:col-span-1">
+                        <img src="${movie.poster}" class="w-full rounded-2xl shadow-2xl shadow-indigo-500/20" alt="${movie.title}">
+                    </div>
+                    <div class="md:col-span-2 space-y-6">
+                        <div class="flex flex-wrap items-center gap-4">
+                            <span class="text-indigo-400 font-bold">★ ${movie.rating}</span>
+                            <span class="text-zinc-400">${movie.year}</span>
+                            <span class="text-zinc-400 border border-zinc-700 px-2 py-0.5 rounded text-sm">${movie.duration}</span>
+                            <span class="bg-indigo-600/20 text-indigo-400 px-3 py-1 rounded-full text-sm font-bold">${movie.genre}</span>
+                        </div>
+                        <h1 class="text-5xl md:text-7xl font-black">${movie.title}</h1>
+                        <p class="text-xl text-zinc-300 leading-relaxed">${movie.desc}</p>
+                        <div class="flex gap-4 pt-8">
+                            <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-10 py-4 rounded-xl font-black text-lg flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                לצפייה עכשיו
+                            </button>
+                            <button onclick="toggleWatchlist(${movie.id})" class="bg-zinc-800 hover:bg-zinc-700 px-10 py-4 rounded-xl font-bold flex items-center gap-2">
+                                ${inWatchlist ? 'הסר מהרשימה' : '+ הרשימה שלי'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-20">
+                    <h3 class="text-2xl font-bold mb-6">סרטים דומים</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                        ${movies.filter(m => m.genre === movie.genre && m.id !== movie.id).slice(0, 5).map(m => createMovieCard(m)).join('')}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('details-content').innerHTML = content;
+            document.getElementById('movie-hero-backdrop').style.backgroundImage = `url(${movie.poster})`;
+            document.getElementById('movie-hero-backdrop').style.backgroundSize = 'cover';
+            document.getElementById('movie-hero-backdrop').style.backgroundPosition = 'center';
+            navigateTo('details');
+        }
+
+        function toggleWatchlist(movieId) {
+            const movie = movies.find(m => m.id === movieId);
+            const index = watchlist.findIndex(m => m.id === movieId);
+            
+            if (index > -1) {
+                watchlist.splice(index, 1);
+            } else {
+                watchlist.push(movie);
+            }
+            
+            localStorage.setItem('watchlist', JSON.stringify(watchlist));
+            updateWatchlist();
+            
+            // Refresh current UI
+            if (!document.getElementById('browse-page').classList.contains('hidden')) {
+                renderMovies('browse-grid', movies);
+            }
+            if (!document.getElementById('home-page').classList.contains('hidden')) {
+                renderMovies('trending-grid', movies.slice(0, 6));
+                renderMovies('action-grid', movies.filter(m => m.genre === 'Action'));
+            }
+        }
+
+        function updateWatchlist() {
+            const container = document.getElementById('watchlist-grid');
+            if (watchlist.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full py-20 text-center">
+                        <p class="text-zinc-500 text-xl">הרשימה שלך ריקה עדיין.</p>
+                        <button onclick="navigateTo('browse')" class="mt-4 text-indigo-400 hover:underline">דפדף בסרטים</button>
+                    </div>
+                `;
+            } else {
+                renderMovies('watchlist-grid', watchlist);
+            }
+        }
+
+        function filterGenre(genre) {
+            if (genre === 'All') {
+                renderMovies('browse-grid', movies);
+            } else {
+                const filtered = movies.filter(m => m.genre === genre);
+                renderMovies('browse-grid', filtered);
+            }
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            if (!query) return;
+            
+            const results = movies.filter(m => 
+                m.title.toLowerCase().includes(query) || 
+                m.genre.toLowerCase().includes(query)
+            );
+            
+            navigateTo('browse');
+            renderMovies('browse-grid', results);
+            
+            // Visual feedback
+            const browseHeader = document.querySelector('#browse-page h1');
+            browseHeader.textContent = `תוצאות חיפוש עבור: "${query}"`;
+        }
+
+        // Initialize
+        window.onload = init;
+    </script>
+</body>
+</html>
